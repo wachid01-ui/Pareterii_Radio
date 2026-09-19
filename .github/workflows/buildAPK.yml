@@ -26,45 +26,12 @@ jobs:
           java-version: "21"
           cache: gradle
 
-      - name: Set up Android SDK command-line tools
+      - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
       - name: Install Android SDK packages
-        shell: bash
         run: |
-          set -euo pipefail
-
-          SDK_ROOT="${ANDROID_SDK_ROOT:-${ANDROID_HOME}}"
-
-          echo "Android SDK root: ${SDK_ROOT}"
-
-          SDKMANAGER="$(command -v sdkmanager)"
-
-          echo "sdkmanager: ${SDKMANAGER}"
-
-          yes | "${SDKMANAGER}" \
-            --sdk_root="${SDK_ROOT}" \
-            --licenses >/dev/null || true
-
-          "${SDKMANAGER}" \
-            --sdk_root="${SDK_ROOT}" \
-            "platform-tools" \
-            "platforms;android-37"
-
-      - name: Verify Android SDK installation
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          SDK_ROOT="${ANDROID_SDK_ROOT:-${ANDROID_HOME}}"
-
-          test -d "${SDK_ROOT}/platforms/android-37"
-          test -d "${SDK_ROOT}/platform-tools"
-
-          echo "Installed Android SDK packages:"
-          sdkmanager \
-            --sdk_root="${SDK_ROOT}" \
-            --list_installed
+          sdkmanager "platform-tools" "platforms;android-37"
 
       - name: Make Gradle executable
         run: chmod +x ./gradlew
